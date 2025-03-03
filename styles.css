@@ -1,0 +1,953 @@
+/* รีเซ็ตค่าพื้นฐาน */
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+/* Wallpaper */
+#wallpaper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.3s ease-in-out;
+}
+/* ปุ่มฟันเฟือง */
+#gear-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1200;
+    transition: right 0.3s ease-in-out;
+}
+#gear-button img {
+    width: 100%;
+    transition: filter 0.3s ease-in-out; /* ทำให้เปลี่ยนสีได้ Smooth */
+}
+
+/* เพิ่ม CSS นี้ในไฟล์ styles.css */
+
+/* เพิ่มเงาให้กับปุ่มฟันเฟืองเมื่อเป็นสีขาว */
+.gear-shadow {
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+}
+
+/* เพิ่มเงา outline เพื่อให้มองเห็นได้ชัดขึ้น */
+.gear-outline {
+    filter: invert(1) /* สีขาว */ drop-shadow(0 0 1px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
+/* ซ่อนเงาเมื่อไอคอนเป็นสีดำ */
+.gear-no-shadow {
+    filter: invert(0); /* สีดำ */
+}
+
+/* เพิ่ม background กลมสำหรับไอคอนฟันเฟือง (ทางเลือกเสริม) */
+.gear-with-bg {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    padding: 5px;
+}
+/* Sidebar ด้านขวา */
+#settings-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px;
+    transition: right 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    overflow-y: auto;
+    display: block;
+    z-index: 1100;
+}
+/* แสดง Sidebar */
+#settings-sidebar.show {
+    display: block;
+    right: 0;
+    opacity: 1;
+}
+/* ส่วนหัวของ Sidebar */
+#sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* ปุ่มปิด Sidebar */
+#close-sidebar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+#close-sidebar:hover {
+    color: red;
+}
+/* ซ่อน Input File จริงๆ */
+#uploadWallpaper {
+    display: none;
+}
+
+/* กล่องปุ่มให้ขนาดเท่ากัน */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+    margin: 15px 0; /* เพิ่มระยะห่างด้านบนและล่าง */
+}
+
+/* ปุ่มอัปโหลด Wallpaper และปุ่มเลือกสีพื้นหลัง */
+.button-style,
+.button-style-label {
+    display: flex;
+    width: 100%;
+    max-width: 260px;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out, transform 0.2s ease;
+    margin: 0; /* ลบ margin เพื่อใช้ gap แทน */
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box; /* เพื่อให้ padding ไม่เพิ่มความกว้าง */
+    height: 48px; /* กำหนดความสูงให้เท่ากัน */
+    position: relative; /* สำหรับ pseudo-element */
+    overflow: hidden; /* สำหรับเอฟเฟ็กต์เมื่อกด */
+}
+
+/* ปรับให้ Label (ปุ่มอัปโหลด) เหมือนปุ่ม */
+.button-style-label {
+    text-decoration: none;
+}
+
+/* เปลี่ยนสีและเพิ่มเอฟเฟ็กต์เมื่อ Hover */
+.button-style:hover,
+.button-style-label:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* เพิ่มเอฟเฟ็กต์เมื่อกดปุ่ม */
+.button-style:active,
+.button-style-label:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* CSS สำหรับไอคอนบนปุ่ม */
+.button-icon {
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 20px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* ทำให้ไอคอนมีความชัดเจนและเด่นชัดขึ้น */
+.button-style:hover .button-icon,
+.button-style-label:hover .button-icon {
+    transform: scale(1.2);
+    transition: transform 0.2s ease;
+}
+
+/* Default Theme */
+#default-theme {
+    width: 100%;
+    max-width: 260px;
+    height: 80px;
+    background: #ffffff;
+    border: 2px solid gray;
+    border-radius: 5px;
+    margin: 10px auto;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    transition: background 0.3s, color 0.3s;
+}
+#default-theme:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+/* ส่วนแสดงประวัติ Wallpaper */
+#history {
+    margin-top: 10px;
+}
+/* ปรับขนาดรูปประวัติให้พอดี */
+.history-item {
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    margin: 10px auto;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+.history-item:hover {
+    opacity: 0.7;
+}
+/* ปุ่มลบ (กากบาท) */
+.delete-history {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+}
+.history-item:hover .delete-history {
+    display: block;
+}
+
+/* CSS สำหรับ Image Cropper ที่กำหนดเอง */
+/* Container หลักของ Cropper */
+#cropper-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ซ่อน Cropper เมื่อยังไม่ใช้ */
+#cropper-container.hidden {
+    display: none;
+}
+
+/* Container ของรูปและกรอบ */
+#cropper-image-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 70vh;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* รูปที่จะครอป */
+#cropper-image {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+/* Overlay ทับรูป */
+#cropper-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* กรอบครอป */
+#cropper-frame {
+    position: absolute;
+    background-color: transparent;
+    border: 2px dashed #fff;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    cursor: move;
+}
+
+/* แฮนเดิลสำหรับย่อขยายที่มุม */
+.cropper-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #3498db;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+/* ตำแหน่งของแฮนเดิลแต่ละมุม */
+.tl-handle {
+    top: -8px;
+    left: -8px;
+    cursor: nw-resize;
+}
+
+.tr-handle {
+    top: -8px;
+    right: -8px;
+    cursor: ne-resize;
+}
+
+.bl-handle {
+    bottom: -8px;
+    left: -8px;
+    cursor: sw-resize;
+}
+
+.br-handle {
+    bottom: -8px;
+    right: -8px;
+    cursor: se-resize;
+}
+
+/* ปุ่มควบคุมด้านล่าง */
+#cropper-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* ปุ่มในส่วนของ Cropper */
+#cropper-controls .button-style {
+    width: 200px;
+    margin: 5px;
+    padding: 10px;
+}
+
+/* สไตล์ปุ่มสำหรับเลือก Aspect Ratio */
+#ratio-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.ratio-button {
+    padding: 8px 15px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.ratio-button:hover {
+    background-color: #444;
+}
+
+.ratio-button.active {
+    background-color: #3498db;
+    transform: scale(1.05);
+}
+
+/* เส้นไกด์ในกรอบครอป */
+#cropper-frame::before,
+#cropper-frame::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
+/* เส้นแนวตั้ง */
+#cropper-frame::before {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* เส้นแนวนอน */
+#cropper-frame::after {
+    width: 100%;
+    height: 1px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* คำแนะนำเมื่อ Hover ปุ่ม */
+#crop-button:hover::after {
+    content: "ตัดภาพตามที่เลือกและบันทึกเป็นพื้นหลัง";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#cancel-crop:hover::after {
+    content: "ยกเลิกการครอปและกลับไปที่เมนู";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* CSS สำหรับควบคุมการแสดงภาพพื้นหลัง */
+
+/* ตัวเลือกรูปแบบการแสดงภาพพื้นหลัง */
+.bg-fit-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto 15px;
+    gap: 8px;
+}
+
+.bg-fit-option {
+    background-color: #2c2c2c;
+    border: 2px solid #444;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s, border-color 0.3s;
+}
+
+.bg-fit-option:hover {
+    background-color: #383838;
+    transform: translateY(-2px);
+}
+
+.bg-fit-option.active {
+    border-color: #3498db;
+    background-color: #2a3e52;
+}
+
+.option-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: white;
+}
+
+.option-desc {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* Custom Position Control */
+#custom-position-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    border-radius: 8px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.custom-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.custom-control-header h3 {
+    margin: 0;
+}
+
+.close-custom-control {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-custom-control:hover {
+    color: red;
+}
+
+.custom-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.slider-control {
+    width: 100%;
+}
+
+.slider-label-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.slider-label {
+    font-size: 14px;
+    color: #ddd;
+}
+
+.slider-value {
+    font-size: 14px;
+    color: #3498db;
+}
+
+/* Custom Slider */
+.custom-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: #444;
+    outline: none;
+}
+
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #3498db;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+.custom-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #3498db;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+/* ปุ่มบันทึก */
+#custom-position-container .button-style {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* CSS สำหรับ Color Picker - ปรับขนาดให้กระชับ */
+#color-picker-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px; /* ลดความกว้าง */
+    max-width: 85%; /* จำกัดความกว้างไม่ให้ล้นจอ */
+    max-height: 80vh; /* จำกัดความสูงไม่ให้ล้นจอ */
+    overflow-y: auto; /* เพิ่ม scroll เมื่อเนื้อหายาวเกินไป */
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    border-radius: 8px;
+    padding: 15px; /* ลด padding */
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.color-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* ลดระยะห่าง */
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px; /* ลด padding */
+}
+
+.color-picker-header h3 {
+    margin: 0;
+    font-size: 16px; /* ลดขนาดตัวอักษร */
+}
+
+.close-color-picker {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-color-picker:hover {
+    color: red;
+}
+
+/* ส่วน Color Palette */
+.color-palette-section {
+    margin-bottom: 15px; /* ลดระยะห่าง */
+}
+
+.color-palette-section h4 {
+    margin: 0 0 8px 0; /* ลดระยะห่าง */
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+    color: #ddd;
+}
+
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px; /* ลดระยะห่าง */
+    margin-bottom: 12px; /* ลดระยะห่าง */
+}
+
+.color-option {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #666;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ส่วนกรอกรหัสสี */
+.custom-color-section {
+    margin-bottom: 15px; /* ลดระยะห่าง */
+    padding-top: 12px; /* ลด padding */
+    border-top: 1px solid #444;
+}
+
+.custom-color-section h4 {
+    margin: 0 0 10px 0; /* ลดระยะห่าง */
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+    color: #ddd;
+}
+
+.color-preview-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px; /* ลดระยะห่าง */
+}
+
+.color-preview {
+    width: 50px; /* ลดขนาด */
+    height: 50px; /* ลดขนาด */
+    border-radius: 50%;
+    border: 2px solid #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.color-input-container {
+    margin-bottom: 10px; /* ลดระยะห่าง */
+}
+
+.color-input {
+    width: 100%;
+    padding: 8px; /* ลด padding */
+    font-size: 13px; /* ลดขนาดตัวอักษร */
+    border-radius: 4px;
+    border: 1px solid #666;
+    background-color: #333;
+    color: white;
+    box-sizing: border-box;
+}
+
+.color-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+#apply-color-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px; /* ลด padding */
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+}
+
+/* ส่วน HTML5 Color Picker */
+.html5-color-section {
+    padding-top: 12px; /* ลด padding */
+    border-top: 1px solid #444;
+}
+
+.html5-color-section h4 {
+    margin: 0 0 10px 0; /* ลดระยะห่าง */
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+    color: #ddd;
+}
+
+.html5-color-picker {
+    width: 100%;
+    height: 35px; /* ลดความสูง */
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* สไตล์เพิ่มเติมสำหรับ HTML5 Color Picker ใน Firefox */
+.html5-color-picker::-moz-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+/* สไตล์เพิ่มเติมสำหรับ HTML5 Color Picker ใน Chrome */
+.html5-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.html5-color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+
+/* CSS เพิ่มเติมสำหรับการจัดวางแบบกระชับ */
+.html5-color-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.html5-color-picker {
+    width: 40px; /* ลดขนาด */
+    height: 35px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.color-input {
+    flex-grow: 1;
+}
+
+.preview-apply-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #666;
+    flex-shrink: 0;
+}
+
+#apply-color-button {
+    flex-grow: 1;
+    padding: 8px 12px;
+    height: 36px;
+}
+
+/* ใช้ 4 คอลัมน์แทน 5 คอลัมน์ */
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+}
+
+/* CSS สำหรับ Search Bar */
+#search-container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 650px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+#search-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#search-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+#search-bar:hover, #search-bar:focus-within {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+#search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    color: #666;
+}
+
+#search-input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    color: #333;
+    padding: 0;
+}
+
+#search-input::placeholder {
+    color: #999;
+}
+
+#search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    color: #666;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#search-clear:hover {
+    opacity: 1;
+}
+
+#search-clear.hidden {
+    display: none;
+}
+
+/* Search Engines */
+#search-engines {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.search-engine {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-engine:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+.search-engine.active {
+    background-color: rgba(52, 152, 219, 0.95);
+    color: white;
+    font-weight: bold;
+}
+
+/* Dark Mode (สำหรับพื้นหลังสีเข้ม) */
+@media (prefers-color-scheme: dark) {
+    .dark-theme #search-bar {
+        background-color: rgba(40, 40, 40, 0.95);
+    }
+    
+    .dark-theme #search-input {
+        color: #eee;
+    }
+    
+    .dark-theme #search-input::placeholder {
+        color: #aaa;
+    }
+    
+    .dark-theme #search-icon,
+    .dark-theme #search-clear {
+        color: #aaa;
+    }
+    
+    .dark-theme .search-engine {
+        background-color: rgba(60, 60, 60, 0.8);
+        color: #ddd;
+    }
+    
+    .dark-theme .search-engine:hover {
+        background-color: rgba(70, 70, 70, 0.9);
+    }
+    
+    .dark-theme .search-engine.active {
+        background-color: rgba(41, 128, 185, 0.95);
+    }
+}
+
+/* ปรับแต่ง search bar สำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 768px) {
+    #search-container {
+        max-width: 90%;
+    }
+    
+    #search-bar {
+        height: 45px;
+    }
+    
+    #search-input {
+        font-size: 15px;
+    }
+    
+    #search-engines {
+        flex-wrap: wrap;
+    }
+}

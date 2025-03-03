@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Firefox New Tab Wallpaper",
+  "version": "1.0",
+  "description": "เลือก Wallpaper ของหน้า New Tab",
+  "permissions": ["storage", "tabs"],
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "newtab-wallpaper@example.com"
+    }
+  }
+}
